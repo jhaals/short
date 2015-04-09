@@ -17,6 +17,7 @@ public class Database {
 
     public String get(int id) {
        Connection db = connect();
+        if(db == null) return null;
         try {
             pst = db.prepareStatement("SELECT url FROM urls WHERE id=?");
             pst.setInt(1, id);
@@ -41,20 +42,11 @@ public class Database {
         }
         return null;
     }
+
     public int save(String url) {
         Connection db = connect();
-
+        if(db == null) return 0;
         try {
-            /*
-            Statement stmt = db.createStatement();
-
-            String sql = "CREATE TABLE IF NOT EXISTS urls (\n" +
-                    "    id serial PRIMARY KEY, \n" +
-                    "    url VARCHAR(2000)\n" +
-                    ");";
-            stmt.executeUpdate(sql);
-            stmt.close();
-            */
             pst = db.prepareStatement("INSERT INTO urls(url) VALUES(?) RETURNING id");
             pst.setString(1, url);
             ResultSet rs = pst.executeQuery();
@@ -79,4 +71,30 @@ public class Database {
         return 0;
     }
 
+    public Boolean setup() {
+        Connection db = connect();
+        if(db == null) return false;
+        try {
+            Statement stmt = db.createStatement();
+
+            String sql = "CREATE TABLE IF NOT EXISTS urls (\n" +
+                    "    id serial PRIMARY KEY, \n" +
+                    "    url VARCHAR(2000)\n" +
+                    ");";
+            stmt.executeUpdate(sql);
+            stmt.close();
+        } catch(SQLException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                if (db != null) {
+                    db.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return true;
+    }
 }
