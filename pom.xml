@@ -15,7 +15,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>FileButler</mainClass>
+                            <mainClass>Short</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
