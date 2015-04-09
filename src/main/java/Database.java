@@ -5,19 +5,15 @@ public class Database {
     private Connection connection = null;
     private PreparedStatement pst = null;
 
-    private Connection connect() {
-        try {
-            connection = DriverManager.getConnection(
+    private Connection connect() throws SQLException {
+        connection = DriverManager.getConnection(
                     "jdbc:postgresql://127.0.0.1:5432/short");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
         return connection;
     }
 
-    public String get(int id) {
-       Connection db = connect();
-        if(db == null) return null;
+    public String get(int id) throws SQLException {
+
+        Connection db = connect();
         try {
             pst = db.prepareStatement("SELECT url FROM urls WHERE id=?");
             pst.setInt(1, id);
@@ -25,27 +21,19 @@ public class Database {
             while (rs.next()) {
                 return rs.getString(1);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         } finally {
-            try {
-                if (pst != null) {
-                    pst.close();
-                }
-                if (db != null) {
-                    db.close();
-                }
-
-            } catch (SQLException e) {
-                e.printStackTrace();
+            if (pst != null) {
+                pst.close();
+            }
+            if (db != null) {
+                db.close();
             }
         }
         return null;
     }
 
-    public int save(String url) {
+    public int save(String url) throws SQLException {
         Connection db = connect();
-        if(db == null) return 0;
         try {
             pst = db.prepareStatement("INSERT INTO urls(url) VALUES(?) RETURNING id");
             pst.setString(1, url);
@@ -53,27 +41,19 @@ public class Database {
             while (rs.next()) {
                 return rs.getInt(1);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         } finally {
-            try {
-                if (pst != null) {
-                    pst.close();
-                }
-                if (db != null) {
-                    db.close();
-                }
-
-            } catch (SQLException e) {
-                e.printStackTrace();
+            if (pst != null) {
+                pst.close();
+            }
+            if (db != null) {
+                db.close();
             }
         }
         return 0;
     }
 
-    public Boolean setup() {
+    public void setup() throws SQLException {
         Connection db = connect();
-        if(db == null) return false;
         try {
             Statement stmt = db.createStatement();
 
@@ -83,18 +63,10 @@ public class Database {
                     ");";
             stmt.executeUpdate(sql);
             stmt.close();
-        } catch(SQLException e) {
-            e.printStackTrace();
-            return false;
         } finally {
-            try {
-                if (db != null) {
-                    db.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
+            if (db != null) {
+                db.close();
             }
         }
-        return true;
     }
 }

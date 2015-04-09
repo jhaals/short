@@ -1,6 +1,7 @@
 import org.apache.commons.validator.routines.UrlValidator;
 
 import java.net.URL;
+import java.sql.SQLException;
 
 import static spark.Spark.get;
 import static spark.Spark.halt;
@@ -12,8 +13,11 @@ public class Short {
 
         Database db = new Database();
 
-        if(!db.setup()) {
-            System.out.println("failed to setup database!");
+        try {
+            db.setup();
+        } catch (SQLException e) {
+            System.out.println("Failed to setup database");
+            e.printStackTrace();
             System.exit(1);
         }
 
