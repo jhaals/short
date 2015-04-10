@@ -1,6 +1,5 @@
 import org.apache.commons.validator.routines.UrlValidator;
 
-import java.net.URL;
 import java.sql.SQLException;
 
 import static spark.Spark.get;
@@ -30,7 +29,6 @@ public class Short {
             }
 
             int result = db.save(url);
-            // TODO: Throw something instead
             if(result == 0) {
                halt(500, "could not store url in database");
             }

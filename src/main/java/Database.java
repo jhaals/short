@@ -38,7 +38,7 @@ public class Database {
             pst = db.prepareStatement("INSERT INTO urls(url) VALUES(?) RETURNING id");
             pst.setString(1, url);
             ResultSet rs = pst.executeQuery();
-            while (rs.next()) {
+            while(rs.next()) {
                 return rs.getInt(1);
             }
         } finally {
@@ -56,7 +56,6 @@ public class Database {
         Connection db = connect();
         try {
             Statement stmt = db.createStatement();
-
             String sql = "CREATE TABLE IF NOT EXISTS urls (\n" +
                     "    id serial PRIMARY KEY, \n" +
                     "    url VARCHAR(2000)\n" +
